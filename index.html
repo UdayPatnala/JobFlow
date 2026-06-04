@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobflow Copilot &bull; Architectural Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-logo">🤖</span>
+                <div class="brand-text">
+                    <h1>Jobflow</h1>
+                    <span class="badge">Architecture V1.0</span>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-tab="tab-dashboard" id="btn-tab-dashboard">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 13h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0 8h6c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1zm10-17v4c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1zm0 17h6c.55 0 1-.45 1-1v-8c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1z"/></svg>
+                    System Control
+                </button>
+                <button class="nav-btn" data-tab="tab-adaptor" id="btn-tab-adaptor">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    Resume Adaptor
+                </button>
+                <button class="nav-btn" data-tab="tab-tracker" id="btn-tab-tracker">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    App Tracker
+                </button>
+                <button class="nav-btn" data-tab="tab-scheduler" id="btn-tab-scheduler">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                    Windows Setup
+                </button>
+                <button class="nav-btn" data-tab="tab-education" id="btn-tab-education">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    Compliance Hub
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="status-panel">
+                    <span class="status-dot pulsing"></span>
+                    <span class="status-label">Sandbox Mode</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="app-header">
+                <div class="header-info">
+                    <h2 id="current-tab-title">System Overview</h2>
+                    <p id="current-tab-desc">High-level components and integration telemetry.</p>
+                </div>
+                <div class="quick-stats">
+                    <div class="stat-pill">
+                        <span class="stat-name">Active Engine</span>
+                        <span class="stat-val font-accent text-green">Online</span>
+                    </div>
+                    <div class="stat-pill">
+                        <span class="stat-name">Safe Mode</span>
+                        <span class="stat-val font-accent text-cyan">Active</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Tab: Dashboard / Overview -->
+            <section id="tab-dashboard" class="tab-panel active">
+                <!-- Highlight Alert -->
+                <div class="alert-box alert-info">
+                    <div class="alert-icon">⚠️</div>
+                    <div class="alert-content">
+                        <h4>Safe Mode Enforcement</h4>
+                        <p>Direct headless browser submissions on third-party sites like LinkedIn or Naukri are suppressed. The architecture uses a <strong>Human-in-the-Loop</strong> execution strategy to protect user accounts from automated bot-detection bans.</p>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Matched Skills Adaptations</span>
+                            <span class="stat-icon">📄</span>
+                        </div>
+                        <div class="stat-value" id="stats-adaptations">0</div>
+                        <div class="stat-trend trend-neutral">Conceptual Engine Ready</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Tracked Job Records</span>
+                            <span class="stat-icon">📊</span>
+                        </div>
+                        <div class="stat-value" id="stats-records">4</div>
+                        <div class="stat-trend trend-neutral">Simulated Log</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Automation Frameworks</span>
+                            <span class="stat-icon">⚙️</span>
+                        </div>
+                        <div class="stat-value">2 / 2</div>
+                        <div class="stat-trend trend-positive">Playwright & Selenium Enabled</div>
+                    </div>
+                </div>
+
+                <!-- Diagram & Flow -->
+                <div class="content-row">
+                    <div class="card card-wide">
+                        <div class="card-header">
+                            <h3>High-Level Architectural Workflow</h3>
+                        </div>
+                        <div class="card-body diagram-container">
+                            <svg class="flowchart-svg" viewBox="0 0 800 240">
+                                <!-- Define filters/gradients -->
+                                <defs>
+                                    <linearGradient id="grad-active" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:var(--accent-glow-primary);stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:var(--accent-primary);stop-opacity:1" />
+                                    </linearGradient>
+                                    <linearGradient id="grad-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:var(--accent-cyan);stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:var(--bg-card);stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+
+                                <!-- Connection lines -->
+                                <path d="M120 120 H180" class="flow-line" />
+                                <path d="M280 120 H340" class="flow-line" />
+                                <path d="M440 120 H500" class="flow-line" />
+                                <path d="M600 120 H660" class="flow-line" />
+                                
+                                <!-- Step 1: OS Scheduler -->
+                                <g class="flow-node" id="node-1">
+                                    <rect x="20" y="80" width="100" height="80" rx="10" />
+                                    <text x="70" y="115" class="node-title">1. OS Trigger</text>
+                                    <text x="70" y="135" class="node-subtitle">Task Scheduler</text>
+                                </g>
+
+                                <!-- Step 2: Analyzer -->
+                                <g class="flow-node" id="node-2">
+                                    <rect x="180" y="80" width="100" height="80" rx="10" />
+                                    <text x="230" y="115" class="node-title">2. Scraper</text>
+                                    <text x="230" y="135" class="node-subtitle">Job Description</text>
+                                </g>
+
+                                <!-- Step 3: Skill Adaptor -->
+                                <g class="flow-node node-highlight" id="node-3">
+                                    <rect x="340" y="80" width="100" height="80" rx="10" />
+                                    <text x="390" y="115" class="node-title">3. Adaptor</text>
+                                    <text x="390" y="135" class="node-subtitle">Docx Rewriting</text>
+                                </g>
+
+                                <!-- Step 4: Decision Matrix -->
+                                <g class="flow-node" id="node-4">
+                                    <rect x="500" y="80" width="100" height="80" rx="10" />
+                                    <text x="550" y="115" class="node-title">4. Action Check</text>
+                                    <text x="550" y="135" class="node-subtitle">Easy Apply?</text>
+                                </g>
+
+                                <!-- Step 5: Notification -->
+                                <g class="flow-node" id="node-5">
+                                    <rect x="660" y="80" width="120" height="80" rx="10" />
+                                    <text x="720" y="115" class="node-title">5. Notification</text>
+                                    <text x="720" y="135" class="node-subtitle">Plyer Desktop Alert</text>
+                                </g>
+                            </svg>
+                            <div class="diagram-overlay">
+                                <p>Hover over components or click navigation buttons to explore operational parameters.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Resume Adaptor (Document adaptation simulation) -->
+            <section id="tab-adaptor" class="tab-panel">
+                <div class="control-panel-grid">
+                    <!-- Left: Input & Customization -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Resume Inputs</h3>
+                            <span class="card-subtitle">Format-safe adaptation testbench</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-group">
+                                <label for="input-skills">My Standard Skills (Comma Separated)</label>
+                                <textarea id="input-skills" rows="3">Python, SQL, HTML, CSS, Git, Machine Learning</textarea>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="input-job-desc">Job Description Text</label>
+                                <textarea id="input-job-desc" rows="6" placeholder="Paste recruiter job requirements here...">We are looking for a Senior Software Engineer with strong expertise in Python, SQL, REST APIs, Docker, and Web Automation (Playwright/Selenium). Machine learning experience is a plus.</textarea>
+                            </div>
+
+                            <button class="btn btn-primary btn-full" id="btn-adapt-skills">Adapt Skills Block</button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Dynamic Output Diff Document Simulation -->
+                    <div class="card">
+                        <div class="card-header flex-header">
+                            <h3>Document Editor Simulation</h3>
+                            <span class="badge badge-accent">Word Docx Structure</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="docx-preview-container">
+                                <div class="docx-header">
+                                    <h4>JOHN DOE &mdash; RESUME</h4>
+                                    <p>john.doe@email.com &bull; +1 (555) 0199 &bull; github.com/johndoe</p>
+                                </div>
+                                <div class="docx-section">
+                                    <h5>EXPERIENCE</h5>
+                                    <p><strong>Software Engineer</strong> @ Startup Tech (2024 - Present)</p>
+                                    <ul>
+                                        <li>Built and scaled data warehousing backends using relational infrastructure.</li>
+                                        <li>Maintained automation runtimes with Python and Docker integrations.</li>
+                                    </ul>
+                                </div>
+                                <div class="docx-section highlight-target" id="skills-section-preview">
+                                    <h5>SKILLS</h5>
+                                    <p class="skills-target" id="resume-skills-block">Skills: Python, SQL, HTML, CSS, Git, Machine Learning</p>
+                                </div>
+                            </div>
+                            <div class="action-bar margin-top">
+                                <button class="btn btn-secondary" id="btn-copy-skills" disabled>Copy Skills Block</button>
+                                <span class="action-alert-msg text-cyan" id="adaptor-toast"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: App Tracker & Notifications -->
+            <section id="tab-tracker" class="tab-panel">
+                <div class="control-panel-grid columns-1-2">
+                    <!-- Left: Control Actions & Simulate Alerts -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Trigger Operations</h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="desc-text text-muted">Run a conceptual matching script. If key criteria are missed (e.g. required experience is 5+ years but resume has 2 years), a manual input notification is triggered.</p>
+                            
+                            <div class="form-row">
+                                <label for="job-title-sim">Simulated Job Title</label>
+                                <input type="text" id="job-title-sim" value="Senior Backend Engineer">
+                            </div>
+                            <div class="form-row">
+                                <label for="company-sim">Simulated Company</label>
+                                <input type="text" id="company-sim" value="Innovate Corp">
+                            </div>
+                            <div class="form-row">
+                                <label for="status-reason-sim">Notification Reason</label>
+                                <select id="status-reason-sim">
+                                    <option value="needs_manual">Requires custom portfolio link input</option>
+                                    <option value="tos_guardrail">Anti-bot cooldown active - Complete manually</option>
+                                    <option value="skills_mismatch">Major skill gap detected (Docker missing)</option>
+                                </select>
+                            </div>
+
+                            <button class="btn btn-accent btn-full" id="btn-trigger-alert">Trigger Desktop Alert</button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Local Tracker State -->
+                    <div class="card">
+                        <div class="card-header flex-header">
+                            <h3>Local Application Ledger</h3>
+                            <button class="btn btn-outline btn-sm" id="btn-clear-tracker">Reset Ledger</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="tracker-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Timestamp</th>
+                                            <th>Job Title</th>
+                                            <th>Company</th>
+                                            <th>Platform</th>
+                                            <th>Status</th>
+                                            <th>Action Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tracker-table-body">
+                                        <!-- Will be dynamically loaded -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Mock Notification Portal in UI -->
+                <div class="notification-toast-portal" id="notification-portal">
+                    <!-- Dynamic toasts will slide in here -->
+                </div>
+            </section>
+
+            <!-- Tab: Startup & Script Generator -->
+            <section id="tab-scheduler" class="tab-panel">
+                <div class="control-panel-grid">
+                    <!-- Left Config -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Configure Startup Paths</h3>
+                            <span class="card-subtitle">Generate custom scheduling assets</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-group">
+                                <label for="cfg-python-path">Python Executable Path</label>
+                                <input type="text" id="cfg-python-path" value="C:\Python312\pythonw.exe">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="cfg-script-path">Python Script Entry Point</label>
+                                <input type="text" id="cfg-script-path" value="C:\Users\udayp\Documents\job_copilot\main.py">
+                            </div>
+
+                            <div class="input-group">
+                                <label for="cfg-browser-profile">Browser Profile Cache Path</label>
+                                <input type="text" id="cfg-browser-profile" value="C:\Users\udayp\AppData\Local\Google\Chrome\User Data\Default">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Generated Scripts -->
+                    <div class="card">
+                        <div class="card-header flex-header">
+                            <div class="tabs-sub">
+                                <button class="sub-tab-btn active" data-subtab="sub-powershell" id="btn-sub-powershell">PowerShell Installer</button>
+                                <button class="sub-tab-btn" data-subtab="sub-python" id="btn-sub-python">Python Selenium Base</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- PowerShell Installer Code -->
+                            <div class="sub-tab-panel active" id="sub-powershell">
+                                <p class="desc-text text-muted margin-bottom">Run this command in an administrator PowerShell terminal to schedule the script to launch silently when logging onto Windows.</p>
+                                <pre><code id="code-powershell"># Loading variables...</code></pre>
+                                <button class="btn btn-secondary btn-sm" id="btn-copy-powershell">Copy PowerShell Script</button>
+                            </div>
+
+                            <!-- Python Base Code -->
+                            <div class="sub-tab-panel" id="sub-python">
+                                <p class="desc-text text-muted margin-bottom">A conceptual blueprint of a Selenium runner using persistent profiles to preserve login states and dodge standard bot detection.</p>
+                                <pre><code id="code-python"># Loading variables...</code></pre>
+                                <button class="btn btn-secondary btn-sm" id="btn-copy-python">Copy Python Base</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Ethical / Educational Compliance Hub -->
+            <section id="tab-education" class="tab-panel">
+                <div class="compliance-layout">
+                    <!-- Column 1: Risk Assessment -->
+                    <div class="card card-alert-style">
+                        <div class="card-header">
+                            <h3>Anti-Bot Countermeasures & Risks</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="risk-timeline">
+                                <div class="timeline-item">
+                                    <span class="timeline-badge badge-red">Critical</span>
+                                    <h4>Profile Flagging / Account Banishment</h4>
+                                    <p>LinkedIn and Naukri actively scan logins and navigation vectors. Headless automated drivers (like raw Puppeteer/Selenium) trigger behavioral signatures. If flagged, you risk losing your career network profile forever.</p>
+                                </div>
+                                <div class="timeline-item">
+                                    <span class="timeline-badge badge-orange">High</span>
+                                    <h4>Dynamic CSS Class Changes</h4>
+                                    <p>Platforms deploy weekly randomized class names or layout shifts. A static Selenium selector will fail constantly, causing script crashes and runtime errors.</p>
+                                </div>
+                                <div class="timeline-item">
+                                    <span class="timeline-badge badge-yellow">Medium</span>
+                                    <h4>Ethical Incoherency (Skill Injection)</h4>
+                                    <p>Fully automated skill adaptation risks mismatching actual knowledge. Tailoring skills you do not have in order to trick screening systems is highly deceptive and damages credibility during recruiter rounds.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Safety Best Practices -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>The Safe & Compliant Alternative</h3>
+                            <span class="card-subtitle">Alternative methods to achieve automation safely</span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="clean-list">
+                                <li>
+                                    <strong>💼 Semi-Automated Preparation:</strong>
+                                    <p>Use local scripts only to parse job details and prepare your custom document draft. Complete the final portal interaction manually to handle CAPTCHAs, question prompts, and verify custom fields.</p>
+                                </li>
+                                <li>
+                                    <strong>🍪 Cookie Profile Preservation:</strong>
+                                    <p>Rather than logging in through scripts, point Selenium/Playwright to your actual local Chrome user profile directory. This preserves session cookies, mimicking a standard human session and reducing MFA alerts.</p>
+                                </li>
+                                <li>
+                                    <strong>📈 Random Sleep Intervals:</strong>
+                                    <p>If utilizing browsers for scanning job postings (not applying), inject randomized sleeps between 5 to 15 seconds to simulate reading behavior, and scroll pages using random pixel bounds.</p>
+                                </li>
+                                <li>
+                                    <strong>🔔 System Alerts:</strong>
+                                    <p>Focus efforts on notification hooks (e.g. email parsing to Slack or local OS desktop notifications), allowing you to review and apply with 1 click.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
