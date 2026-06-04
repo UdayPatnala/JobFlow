@@ -1,10 +1,10 @@
-/* Core Stylesheet: Jobflow Copilot Conceptual Dashboard */
+/* Core Stylesheet: Jobflow Copilot Conceptual Dashboard V2.0 */
 
 :root {
-    --bg-base: #090a10;
-    --bg-sidebar: rgba(13, 14, 25, 0.85);
-    --bg-card: rgba(22, 24, 44, 0.7);
-    --bg-card-hover: rgba(28, 30, 56, 0.85);
+    --bg-base: #0a0b12;
+    --bg-sidebar: rgba(12, 14, 26, 0.85);
+    --bg-card: rgba(22, 25, 46, 0.7);
+    --bg-card-hover: rgba(28, 32, 58, 0.85);
     --border-color: rgba(255, 255, 255, 0.06);
     --border-glow: rgba(99, 102, 241, 0.15);
     
@@ -305,7 +305,7 @@ body {
 /* Overview Dashboard Stats Grid */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1.5rem;
 }
 
@@ -489,7 +489,7 @@ body {
     color: var(--text-secondary);
 }
 
-textarea, input[type="text"], select {
+textarea, input[type="text"], input[type="password"], select {
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -500,7 +500,7 @@ textarea, input[type="text"], select {
     transition: var(--transition-smooth);
 }
 
-textarea:focus, input[type="text"]:focus, select:focus {
+textarea:focus, input[type="text"]:focus, input[type="password"]:focus, select:focus {
     border-color: var(--accent-primary);
     box-shadow: 0 0 10px var(--border-glow);
 }
@@ -595,7 +595,7 @@ textarea:focus, input[type="text"]:focus, select:focus {
     padding: 2rem;
     font-family: 'Times New Roman', Times, serif;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    max-height: 400px;
+    max-height: 380px;
     overflow-y: auto;
     font-size: 0.85rem;
     line-height: 1.5;
@@ -887,7 +887,216 @@ code {
     line-height: 1.4;
 }
 
-/* Interactive animations and highlights */
+/* ----------------------------------------------------
+   V2.0 STYLING UPGRADES
+   ---------------------------------------------------- */
+.centered-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* Donut SVG Chart Styles */
+.chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.donut-chart-svg {
+    transform: rotate(-90deg);
+}
+
+.donut-track {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.03);
+    stroke-width: 10;
+}
+
+.donut-segment {
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease;
+}
+
+.segment-applied { stroke: var(--accent-emerald); }
+.segment-manual { stroke: var(--accent-amber); }
+.segment-flagged { stroke: var(--accent-rose); }
+
+.donut-text-group {
+    transform: rotate(90deg);
+    transform-origin: 60px 60px;
+}
+
+.donut-number {
+    font-family: var(--font-heading);
+    font-size: 24px;
+    font-weight: 800;
+    fill: var(--text-primary);
+    text-anchor: middle;
+}
+
+.donut-label {
+    font-size: 9px;
+    fill: var(--text-muted);
+    text-anchor: middle;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.chart-legend {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    justify-content: center;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot-applied { background: var(--accent-emerald); }
+.dot-manual { background: var(--accent-amber); }
+.dot-flagged { background: var(--accent-rose); }
+
+/* Bar Chart Styles */
+.bar-chart-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    padding: 0.5rem 0;
+}
+
+.bar-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 30px;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.8rem;
+}
+
+.bar-label {
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bar-track {
+    background: rgba(0, 0, 0, 0.3);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fill-green { background: var(--accent-emerald); }
+.fill-orange { background: var(--accent-amber); }
+.fill-red { background: var(--accent-rose); }
+
+.bar-value {
+    color: var(--text-primary);
+    font-weight: 600;
+    text-align: right;
+}
+
+/* Gemini API Settings Collapsible panel */
+.api-card-settings {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.15);
+    margin-top: 1.2rem;
+    overflow: hidden;
+}
+
+.api-toggle-header {
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.02);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.8rem;
+    user-select: none;
+    transition: var(--transition-smooth);
+}
+
+.api-toggle-header:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.toggle-icon {
+    font-size: 0.6rem;
+    transition: transform 0.3s ease;
+    display: inline-block;
+    color: var(--text-muted);
+}
+
+.api-toggle-header.active .toggle-icon {
+    transform: rotate(90deg);
+}
+
+.api-settings-body {
+    padding: 0;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.4s ease, padding 0.4s ease, opacity 0.3s ease;
+    overflow: hidden;
+}
+
+.api-settings-body.active {
+    padding: 1rem;
+    max-height: 180px;
+    opacity: 1;
+}
+
+.api-status-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 0.5rem;
+}
+
+/* App Tracker controls */
+.tracker-controls-row {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+}
+
+.tracker-controls-row input {
+    flex-grow: 1;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+}
+
+.tracker-controls-row select {
+    width: 140px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+}
+
 .compliance-layout {
     display: grid;
     grid-template-columns: 1fr 1fr;

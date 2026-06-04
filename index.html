@@ -15,7 +15,7 @@
                 <span class="brand-logo">🤖</span>
                 <div class="brand-text">
                     <h1>Jobflow</h1>
-                    <span class="badge">Architecture V1.0</span>
+                    <span class="badge">Architecture V2.0</span>
                 </div>
             </div>
             
@@ -101,11 +101,80 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-header">
-                            <span class="stat-title">Automation Frameworks</span>
-                            <span class="stat-icon">⚙️</span>
+                            <span class="stat-title">Gemini API Status</span>
+                            <span class="stat-icon">🔑</span>
                         </div>
-                        <div class="stat-value">2 / 2</div>
-                        <div class="stat-trend trend-positive">Playwright & Selenium Enabled</div>
+                        <div class="stat-value" id="stats-api-status" style="color: var(--accent-rose);">OFFLINE</div>
+                        <div class="stat-trend text-muted" id="stats-api-desc">Using local fallback logic</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Application Success Rate</span>
+                            <span class="stat-icon">📈</span>
+                        </div>
+                        <div class="stat-value" id="stats-success-rate">75%</div>
+                        <div class="stat-trend text-green">Applied vs Flagged</div>
+                    </div>
+                </div>
+
+                <!-- Analytics Row -->
+                <div class="control-panel-grid">
+                    <!-- Donut Chart Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Application Funnel</h3>
+                        </div>
+                        <div class="card-body centered-flex">
+                            <div class="chart-container">
+                                <svg class="donut-chart-svg" viewBox="0 0 120 120" width="160" height="160">
+                                    <circle cx="60" cy="60" r="50" class="donut-track" />
+                                    <circle cx="60" cy="60" r="50" class="donut-segment segment-applied" id="chart-segment-applied" />
+                                    <circle cx="60" cy="60" r="50" class="donut-segment segment-flagged" id="chart-segment-flagged" />
+                                    <circle cx="60" cy="60" r="50" class="donut-segment segment-manual" id="chart-segment-manual" />
+                                    <g class="donut-text-group">
+                                        <text x="60" y="58" class="donut-number" id="chart-donut-total">4</text>
+                                        <text x="60" y="74" class="donut-label">Total Jobs</text>
+                                    </g>
+                                </svg>
+                                <div class="chart-legend">
+                                    <span class="legend-item"><span class="legend-dot dot-applied"></span> Applied</span>
+                                    <span class="legend-item"><span class="legend-dot dot-manual"></span> Manual Check</span>
+                                    <span class="legend-item"><span class="legend-dot dot-flagged"></span> Flagged</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flag Distribution Bar Chart -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Flag Reasons Frequency</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="bar-chart-container">
+                                <div class="bar-row">
+                                    <span class="bar-label">Custom Portfolio Input</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill fill-green" style="width: 25%;" id="bar-custom-portfolio"></div>
+                                    </div>
+                                    <span class="bar-value" id="val-custom-portfolio">1</span>
+                                </div>
+                                <div class="bar-row">
+                                    <span class="bar-label">Anti-Bot Cooldowns</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill fill-orange" style="width: 25%;" id="bar-bot-cooldown"></div>
+                                    </div>
+                                    <span class="bar-value" id="val-bot-cooldown">1</span>
+                                </div>
+                                <div class="bar-row">
+                                    <span class="bar-label">Skills Mismatch Gap</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill fill-red" style="width: 50%;" id="bar-skills-mismatch"></div>
+                                    </div>
+                                    <span class="bar-value" id="val-skills-mismatch">2</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -117,7 +186,6 @@
                         </div>
                         <div class="card-body diagram-container">
                             <svg class="flowchart-svg" viewBox="0 0 800 240">
-                                <!-- Define filters/gradients -->
                                 <defs>
                                     <linearGradient id="grad-active" x1="0%" y1="0%" x2="100%" y2="100%">
                                         <stop offset="0%" style="stop-color:var(--accent-glow-primary);stop-opacity:1" />
@@ -198,7 +266,26 @@
                                 <textarea id="input-job-desc" rows="6" placeholder="Paste recruiter job requirements here...">We are looking for a Senior Software Engineer with strong expertise in Python, SQL, REST APIs, Docker, and Web Automation (Playwright/Selenium). Machine learning experience is a plus.</textarea>
                             </div>
 
-                            <button class="btn btn-primary btn-full" id="btn-adapt-skills">Adapt Skills Block</button>
+                            <!-- Gemini API Setup Card -->
+                            <div class="api-card-settings">
+                                <div class="api-toggle-header" id="api-settings-toggle">
+                                    <span class="toggle-icon">▶</span>
+                                    <strong>Gemini LLM API Settings (Optional)</strong>
+                                </div>
+                                <div class="api-settings-body collapsed" id="api-settings-body">
+                                    <p class="desc-text text-muted" style="margin-bottom: 0.8rem;">Enter your Gemini API key to run a live LLM-based parsing. Leave blank to run local regex keyword matching.</p>
+                                    <div class="form-row">
+                                        <label for="gemini-api-key">Gemini API Key</label>
+                                        <input type="password" id="gemini-api-key" placeholder="AIzaSy...">
+                                    </div>
+                                    <div class="api-status-row">
+                                        <span>Connection Status:</span>
+                                        <span id="api-connection-status" style="color: var(--accent-rose); font-weight: bold;">DISCONNECTED</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary btn-full" id="btn-adapt-skills" style="margin-top: 1rem;">Adapt Skills Block</button>
                         </div>
                     </div>
 
@@ -227,8 +314,9 @@
                                     <p class="skills-target" id="resume-skills-block">Skills: Python, SQL, HTML, CSS, Git, Machine Learning</p>
                                 </div>
                             </div>
-                            <div class="action-bar margin-top">
-                                <button class="btn btn-secondary" id="btn-copy-skills" disabled>Copy Skills Block</button>
+                            <div class="action-bar margin-top" style="display: flex; gap: 0.8rem; align-items: center;">
+                                <button class="btn btn-secondary" id="btn-copy-skills" disabled>Copy Block</button>
+                                <button class="btn btn-outline" id="btn-download-skills" disabled>Download Text</button>
                                 <span class="action-alert-msg text-cyan" id="adaptor-toast"></span>
                             </div>
                         </div>
@@ -247,7 +335,7 @@
                         <div class="card-body">
                             <p class="desc-text text-muted">Run a conceptual matching script. If key criteria are missed (e.g. required experience is 5+ years but resume has 2 years), a manual input notification is triggered.</p>
                             
-                            <div class="form-row">
+                            <div class="form-row" style="margin-top: 1rem;">
                                 <label for="job-title-sim">Simulated Job Title</label>
                                 <input type="text" id="job-title-sim" value="Senior Backend Engineer">
                             </div>
@@ -272,9 +360,23 @@
                     <div class="card">
                         <div class="card-header flex-header">
                             <h3>Local Application Ledger</h3>
-                            <button class="btn btn-outline btn-sm" id="btn-clear-tracker">Reset Ledger</button>
+                            <div class="header-button-group" style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-accent btn-sm" id="btn-export-csv">Export CSV</button>
+                                <button class="btn btn-outline btn-sm" id="btn-clear-tracker">Reset</button>
+                            </div>
                         </div>
                         <div class="card-body">
+                            <!-- Filter & Search Controls -->
+                            <div class="tracker-controls-row">
+                                <input type="text" id="tracker-search" placeholder="Search by Job or Company...">
+                                <select id="tracker-filter-status">
+                                    <option value="ALL">All Statuses</option>
+                                    <option value="Applied">Applied</option>
+                                    <option value="Manual Check">Manual Check</option>
+                                    <option value="Flagged">Flagged</option>
+                                </select>
+                            </div>
+
                             <div class="table-container">
                                 <table class="tracker-table">
                                     <thead>
