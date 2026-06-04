@@ -1,4 +1,4 @@
-/* Core Stylesheet: Jobflow Copilot Conceptual Dashboard V2.0 */
+/* Core Stylesheet: Jobflow Copilot Conceptual Dashboard V2.5 */
 
 :root {
     --bg-base: #0a0b12;
@@ -1095,6 +1095,42 @@ code {
     width: 140px;
     padding: 0.5rem 0.8rem;
     font-size: 0.8rem;
+}
+
+/* ----------------------------------------------------
+   V2.5 SDQT STYLING UPGRADES
+   ---------------------------------------------------- */
+.qa-terminal {
+    background: #05060b;
+    border-top: 1px solid var(--border-color);
+}
+
+.terminal-line {
+    margin-bottom: 0.5rem;
+    animation: printLine 0.15s ease-out;
+}
+
+@keyframes printLine {
+    from { opacity: 0; transform: translateY(2px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.log-success { color: var(--accent-emerald); }
+.log-fail { color: var(--accent-rose); font-weight: 600; }
+.log-info { color: var(--accent-cyan); }
+.log-warn { color: var(--accent-amber); }
+
+.qa-progress-bar-container {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.qa-results-box {
+    color: var(--text-secondary);
+}
+
+.qa-results-box div {
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.03);
+    padding-bottom: 0.3rem;
 }
 
 .compliance-layout {

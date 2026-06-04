@@ -1,0 +1,25 @@
+{
+  "name": "job-finder-sdqt",
+  "version": "1.0.0",
+  "description": "SDQT automated test configurations and runners for Jobflow Copilot",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "jest": "^29.7.0"
+  },
+  "dependencies": {},
+  "keywords": [
+    "sdqt",
+    "sdet",
+    "testing",
+    "automation",
+    "playwright",
+    "jest"
+  ],
+  "author": "Uday Patnala",
+  "license": "MIT"
+}

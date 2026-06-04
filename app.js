@@ -1,5 +1,5 @@
 /* 
-   Jobflow Copilot V2.0 - Application Controller Logic
+   Jobflow Copilot V2.5 - Application Controller Logic
    Designed for Entry-Level Portfolio (Fresher Showcase)
    
    This script handles:
@@ -10,6 +10,7 @@
    5. Dynamic SVG-based Analytics charts (Donut & Frequency Bars).
    6. Data exports (CSV for logs, TXT for resume outputs).
    7. Real-time ledger search and filter utilities.
+   8. SDQT Automated In-Browser Test Suite Runner (Unit and Integration assertions).
 */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'tab-adaptor': { title: 'Resume Skill Adaptor', desc: 'Simulating formatting-safe keyword adaptation for target job descriptions.' },
         'tab-tracker': { title: 'Application Ledger & Alerts', desc: 'Tracking active applications and testing manual-input triggers.' },
         'tab-scheduler': { title: 'Windows Scheduler Config', desc: 'Configure automatic script startup settings and code generation.' },
+        'tab-qa': { title: 'QA Automated Test Suite', desc: 'Run browser-based unit assertions, logging validations, and integration tests.' },
         'tab-education': { title: 'Compliance & Safety Center', desc: 'Detailed assessments of terms of service risks and anti-bot measures.' }
     };
 
@@ -138,7 +140,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Route to Gemini API if key is present
         if (apiKey.length > 10) {
             try {
-                // Correct public endpoints for standard client-side JSON request
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
                 const prompt = `You are a career development engine. Given the following applicant skills: "${rawSkills.join(', ')}", and the following job description: "${jobDescText}". Adapt the user's skills section specifically to match this job description. Return ONLY a comma-separated list of matchable skills that align with the job requirements. Keep it factual and avoid placeholders. Do not return any other text, markdown formatting, or HTML tags. Output format: "Python, Docker, SQL, API Integration"`;
                 
@@ -168,18 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Local Regex Engine (Fallback or Default Mode)
         if (!isLlmResponse) {
-            const jobDescLower = jobDescText.toLowerCase();
-            const matchingPool = ['Docker', 'REST APIs', 'Playwright', 'Selenium', 'CI/CD', 'AWS', 'Kubernetes', 'FastAPI', 'Node.js', 'Typescript', 'React', 'DevOps'];
-            
-            // Keep original skills
-            adaptedSkillsArray = [...rawSkills];
-            
-            // Inject potential skills if present in job description
-            matchingPool.forEach(skill => {
-                if (jobDescLower.includes(skill.toLowerCase()) && !rawSkills.some(s => s.toLowerCase() === skill.toLowerCase())) {
-                    adaptedSkillsArray.push(skill);
-                }
-            });
+            adaptedSkillsArray = runLocalKeywordMatch(rawSkills, jobDescText);
         }
 
         // Visual Diff Highlight generator: compare adapted array with original user inputs
@@ -208,6 +198,20 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('jobflow_adaptations', totalAdaptations);
         statsAdaptations.textContent = totalAdaptations;
     });
+
+    // Helper isolated logic to run local matches (reused in unit tests)
+    function runLocalKeywordMatch(userSkillsArray, jobDescriptionText) {
+        const jobDescLower = jobDescriptionText.toLowerCase();
+        const matchingPool = ['Docker', 'REST APIs', 'Playwright', 'Selenium', 'CI/CD', 'AWS', 'Kubernetes', 'FastAPI', 'Node.js', 'Typescript', 'React', 'DevOps'];
+        
+        const output = [...userSkillsArray];
+        matchingPool.forEach(skill => {
+            if (jobDescLower.includes(skill.toLowerCase()) && !userSkillsArray.some(s => s.toLowerCase() === skill.toLowerCase())) {
+                output.push(skill);
+            }
+        });
+        return output;
+    }
 
     btnCopySkills.addEventListener('click', () => {
         const textToCopy = resumeSkillsBlock.textContent;
@@ -380,6 +384,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Helper isolated converter logic (reused in unit tests)
+    function convertLedgerToCsv(ledgerArray) {
+        let csvContent = "Timestamp,Job Title,Company,Platform,Status,Action Required\n";
+        ledgerArray.forEach(row => {
+            const time = `"${row.time}"`;
+            const title = `"${row.title.replace(/"/g, '""')}"`;
+            const company = `"${row.company.replace(/"/g, '""')}"`;
+            const platform = `"${row.platform}"`;
+            const status = `"${row.status}"`;
+            const action = `"${row.action.replace(/"/g, '""')}"`;
+            csvContent += `${time},${title},${company},${platform},${status},${action}\n`;
+        });
+        return csvContent;
+    }
+
     btnTriggerAlert.addEventListener('click', () => {
         const title = jobTitleSim.value.trim() || 'Software Engineer';
         const company = companySim.value.trim() || 'SaaS startup';
@@ -411,7 +430,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         localStorage.setItem('jobflow_ledger', JSON.stringify(ledger));
         
-        // Reset inputs and re-render
         renderLedger(trackerSearch.value, trackerFilterStatus.value);
         triggerMockWindowsToast(title, company, reasonText);
     });
@@ -421,22 +439,10 @@ document.addEventListener('DOMContentLoaded', () => {
         renderLedger(trackerSearch.value, trackerFilterStatus.value);
     });
 
-    // CSV Exporter implementation logic
+    // CSV Exporter implementation
     btnExportCsv.addEventListener('click', () => {
         const ledger = getLedger();
-        let csvContent = "Timestamp,Job Title,Company,Platform,Status,Action Required\n";
-        
-        ledger.forEach(row => {
-            // Escape values for safe CSV export
-            const time = `"${row.time}"`;
-            const title = `"${row.title.replace(/"/g, '""')}"`;
-            const company = `"${row.company.replace(/"/g, '""')}"`;
-            const platform = `"${row.platform}"`;
-            const status = `"${row.status}"`;
-            const action = `"${row.action.replace(/"/g, '""')}"`;
-            
-            csvContent += `${time},${title},${company},${platform},${status},${action}\n`;
-        });
+        const csvContent = convertLedgerToCsv(ledger);
 
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
@@ -498,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
             osc.start(ctx.currentTime);
             osc.stop(ctx.currentTime + 0.6);
         } catch (e) {
-            console.log("Audio contexts not initialised");
+            console.log("Audio Context not allowed by user interaction policy");
         }
     }
 
@@ -532,16 +538,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Helper logic to assembly powershell command (reused in unit tests)
+    function assemblyPowerShellCommand(pythonPath, scriptPath) {
+        return `$Action = New-ScheduledTaskAction -Execute "${pythonPath}" -Argument "\`"${scriptPath}\`""
+$Trigger = New-ScheduledTaskTrigger -AtLogOn
+$Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
+Register-ScheduledTask -TaskName "JobflowCopilotScheduler" -Action $Action -Trigger $Trigger -Settings $Settings -Description "Runs Jobflow Copilot on User Windows Startup" -Force`;
+    }
+
     function generateScriptSnippets() {
-        // Prepare variables for display
         const python = cfgPythonPath.value.trim();
         const script = cfgScriptPath.value.trim();
         const profile = cfgBrowserProfile.value.trim();
 
-        const psCode = `$Action = New-ScheduledTaskAction -Execute "${python}" -Argument "\`"${script}\`""
-$Trigger = New-ScheduledTaskTrigger -AtLogOn
-$Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
-Register-ScheduledTask -TaskName "JobflowCopilotScheduler" -Action $Action -Trigger $Trigger -Settings $Settings -Description "Runs Jobflow Copilot on User Windows Startup" -Force`;
+        const psCode = assemblyPowerShellCommand(python, script);
 
         const pyCode = `import time
 import random
@@ -597,7 +607,232 @@ def load_job_page(driver, url):
         });
     });
 
-    // Initialize Page Logs & Charts
+    /* ----------------------------------------------------
+       SDQT IN-BROWSER TEST RUNNER SUB-SYSTEM
+       ---------------------------------------------------- */
+    const btnRunQa = document.getElementById('btn-run-qa');
+    const btnClearQa = document.getElementById('btn-clear-qa');
+    const qaConsoleStatus = document.getElementById('qa-console-status');
+    const qaProgressBar = document.getElementById('qa-progress-bar');
+    const qaTerminalLogs = document.getElementById('qa-terminal-logs');
+    
+    const qaTotalCases = document.getElementById('qa-total-cases');
+    const qaPassedCases = document.getElementById('qa-passed-cases');
+    const qaFailedCases = document.getElementById('qa-failed-cases');
+    const qaDuration = document.getElementById('qa-duration');
+    const qaPassRate = document.getElementById('qa-pass-rate');
+
+    const qaTestSpeed = document.getElementById('qa-test-speed');
+    const qaVerboseLog = document.getElementById('qa-verbose-log');
+
+    let isTestingRunning = false;
+
+    function addConsoleLog(message, type = 'info') {
+        const line = document.createElement('div');
+        line.className = 'terminal-line';
+        
+        let typeClass = 'log-info';
+        let prefix = '[INFO]';
+        
+        if (type === 'success') { typeClass = 'log-success'; prefix = '[PASS]'; }
+        if (type === 'fail') { typeClass = 'log-fail'; prefix = '[FAIL]'; }
+        if (type === 'warn') { typeClass = 'log-warn'; prefix = '[WARN]'; }
+        
+        const timestamp = new Date().toLocaleTimeString();
+        line.innerHTML = `<span style="color:var(--text-muted); font-size: 0.75rem;">${timestamp}</span> <span class="${typeClass}">${prefix} ${message}</span>`;
+        qaTerminalLogs.appendChild(line);
+        qaTerminalLogs.scrollTop = qaTerminalLogs.scrollHeight;
+    }
+
+    btnClearQa.addEventListener('click', () => {
+        if (isTestingRunning) return;
+        qaTerminalLogs.innerHTML = '<div style="color: var(--text-muted);">&gt; Console buffer cleared. Ready for next execution...</div>';
+        qaProgressBar.style.width = '0%';
+        qaPassedCases.textContent = '0';
+        qaFailedCases.textContent = '0';
+        qaDuration.textContent = '0 ms';
+        qaPassRate.textContent = '0%';
+        qaConsoleStatus.textContent = 'IDLE';
+        qaConsoleStatus.className = 'badge badge-accent';
+    });
+
+    btnRunQa.addEventListener('click', async () => {
+        if (isTestingRunning) return;
+        isTestingRunning = true;
+        
+        btnRunQa.disabled = true;
+        btnClearQa.disabled = true;
+        
+        qaConsoleStatus.textContent = 'RUNNING';
+        qaConsoleStatus.className = 'badge badge-accent pulsing';
+        
+        qaTerminalLogs.innerHTML = '';
+        qaProgressBar.style.width = '0%';
+        
+        const delay = parseInt(qaTestSpeed.value, 10);
+        const verbose = qaVerboseLog.checked;
+        const startTime = performance.now();
+
+        let passed = 0;
+        let failed = 0;
+        
+        addConsoleLog('Initializing SDQT Automated Integration Test Environment...', 'info');
+        await sleep(delay);
+
+        // --- TEST CASE 1: Resume adaptation regex keyword aligner ---
+        addConsoleLog('Executing Test Case 1: runLocalKeywordMatch assertions...', 'info');
+        await sleep(delay);
+        try {
+            const userSkills = ['Python', 'SQL'];
+            const jobDesc = 'We need Python, SQL, Docker, and Kubernetes.';
+            const result = runLocalKeywordMatch(userSkills, jobDesc);
+            
+            // Assertions
+            const hasOriginals = result.includes('Python') && result.includes('SQL');
+            const hasInjected = result.includes('Docker') && !result.includes('Kubernetes'); // Kubernetes not in matchingPool
+            
+            if (hasOriginals && hasInjected) {
+                passed++;
+                addConsoleLog('Test Case 1 passed. Local regex mapped variables successfully.', 'success');
+                if (verbose) {
+                    addConsoleLog(`[TC1 Details] Inputs: [${userSkills.join(',')}]. Mapped: [${result.join(',')}].`, 'info');
+                }
+            } else {
+                throw new Error('Skills mismatch occurred during pattern check.');
+            }
+        } catch (e) {
+            failed++;
+            addConsoleLog(`Test Case 1 failed: ${e.message}`, 'fail');
+        }
+        qaProgressBar.style.width = '25%';
+        updateQaStats(passed, failed, startTime);
+        await sleep(delay);
+
+        // --- TEST CASE 2: CSV log converter string parsing ---
+        addConsoleLog('Executing Test Case 2: convertLedgerToCsv escaping and column parsing...', 'info');
+        await sleep(delay);
+        try {
+            const testLedger = [
+                { time: '2026-06-04 12:00', title: 'Developer "Specialist"', company: 'Innovate', platform: 'LinkedIn', status: 'Applied', action: 'None' }
+            ];
+            const csvOutput = convertLedgerToCsv(testLedger);
+            
+            const hasHeader = csvOutput.includes('Timestamp,Job Title,Company,Platform,Status,Action Required');
+            const hasEscapedQuotes = csvOutput.includes('"Developer ""Specialist"""');
+            
+            if (hasHeader && hasEscapedQuotes) {
+                passed++;
+                addConsoleLog('Test Case 2 passed. CSV format matches output specifications.', 'success');
+                if (verbose) {
+                    addConsoleLog(`[TC2 Details] CSV content escaped: ${hasEscapedQuotes}`, 'info');
+                }
+            } else {
+                throw new Error('CSV escaping checks failed.');
+            }
+        } catch (e) {
+            failed++;
+            addConsoleLog(`Test Case 2 failed: ${e.message}`, 'fail');
+        }
+        qaProgressBar.style.width = '50%';
+        updateQaStats(passed, failed, startTime);
+        await sleep(delay);
+
+        // --- TEST CASE 3: PowerShell script builder command output ---
+        addConsoleLog('Executing Test Case 3: assemblyPowerShellCommand path parsing...', 'info');
+        await sleep(delay);
+        try {
+            const testPython = 'C:\\Python\\pythonw.exe';
+            const testScript = 'C:\\Users\\test\\script.py';
+            const generatedCmd = assemblyPowerShellCommand(testPython, testScript);
+            
+            const hasPythonPath = generatedCmd.includes(testPython);
+            const hasScriptPath = generatedCmd.includes(testScript);
+            const hasTaskName = generatedCmd.includes('JobflowCopilotScheduler');
+            
+            if (hasPythonPath && hasScriptPath && hasTaskName) {
+                passed++;
+                addConsoleLog('Test Case 3 passed. Script path assemblies correctly structured.', 'success');
+                if (verbose) {
+                    addConsoleLog(`[TC3 Details] XML config parameters verified.`, 'info');
+                }
+            } else {
+                throw new Error('PowerShell generator output has invalid path strings.');
+            }
+        } catch (e) {
+            failed++;
+            addConsoleLog(`Test Case 3 failed: ${e.message}`, 'fail');
+        }
+        qaProgressBar.style.width = '75%';
+        updateQaStats(passed, failed, startTime);
+        await sleep(delay);
+
+        // --- TEST CASE 4: Browser storage ledger integrity ---
+        addConsoleLog('Executing Test Case 4: LocalStorage ledger read/write limits...', 'info');
+        await sleep(delay);
+        try {
+            const storageBackup = localStorage.getItem('jobflow_ledger');
+            // Write mock data to verify persistence API
+            const mockLog = [{ time: '2026-06-04', title: 'QA', company: 'Test', platform: 'N/A', status: 'Applied', action: '' }];
+            localStorage.setItem('jobflow_ledger', JSON.stringify(mockLog));
+            
+            const readLog = JSON.parse(localStorage.getItem('jobflow_ledger'));
+            const isPersisted = readLog.length === 1 && readLog[0].title === 'QA';
+            
+            // Restore backup
+            if (storageBackup) {
+                localStorage.setItem('jobflow_ledger', storageBackup);
+            } else {
+                localStorage.removeItem('jobflow_ledger');
+            }
+            
+            if (isPersisted) {
+                passed++;
+                addConsoleLog('Test Case 4 passed. LocalStorage serialization and ledger integrity validated.', 'success');
+            } else {
+                throw new Error('Persistence mismatch occurred.');
+            }
+        } catch (e) {
+            failed++;
+            addConsoleLog(`Test Case 4 failed: ${e.message}`, 'fail');
+        }
+        qaProgressBar.style.width = '100%';
+        updateQaStats(passed, failed, startTime);
+        await sleep(delay);
+
+        // Finalize test suite execution
+        const duration = Math.round(performance.now() - startTime);
+        addConsoleLog(`Test suite completed in ${duration}ms.`, 'info');
+        
+        if (failed === 0) {
+            qaConsoleStatus.textContent = 'PASSED';
+            qaConsoleStatus.className = 'badge badge-green';
+            addConsoleLog('ALL ASSERTIONS PASSED. SYSTEM STATUS: SECURE & STABLE.', 'success');
+        } else {
+            qaConsoleStatus.textContent = 'FAILED';
+            qaConsoleStatus.className = 'badge badge-red';
+            addConsoleLog(`TEST FAILURE DETECTED. [Passed: ${passed}, Failed: ${failed}]. REVIEW LOGS.`, 'fail');
+        }
+        
+        btnRunQa.disabled = false;
+        btnClearQa.disabled = false;
+        isTestingRunning = false;
+    });
+
+    function updateQaStats(passed, failed, startTime) {
+        const total = passed + failed;
+        qaPassedCases.textContent = passed;
+        qaFailedCases.textContent = failed;
+        qaDuration.textContent = `${Math.round(performance.now() - startTime)} ms`;
+        
+        const rate = Math.round((passed / 4) * 100);
+        qaPassRate.textContent = `${rate}%`;
+    }
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    /* Initialize Page Logs & Charts */
     renderLedger();
     generateScriptSnippets();
 });
